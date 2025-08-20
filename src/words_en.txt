@@ -1,0 +1,90 @@
+Animals:
+Cat
+Dog
+Elephant
+Giraffe
+Lion
+Shark
+Eagle
+Snake
+Horse
+Cow
+Sheep
+Monkey
+Puma
+Fox
+Rabbit
+Mouse
+Bat
+Hen
+Duck
+Donkey
+Wolf
+
+Countries:
+Mexico
+Argentina
+Chile
+Colombia
+Peru
+Venezuela
+Uruguay
+Guatemala
+Bolivia
+Ecuador
+Paraguay
+Cuba
+Honduras
+El Salvador
+Nicaragua
+Costa Rica
+Panama
+Puerto Rico
+Dominican Republic
+Brazil
+
+Movies:
+Titanic
+The Lion King
+Home Alone
+Back to the Future
+Jurassic Park
+Fast and Furious
+Men in Black
+Ice Age
+Finding Nemo
+The Avengers
+Spider-Man
+Harry Potter and the Sorcerer's Stone
+Pirates of the Caribbean
+Beauty and the Beast
+Toy Story
+The Little Mermaid
+The Lord of the Rings
+Matrix
+Avatar
+Shrek
+
+General:
+Computer
+Programming
+Challenge
+Hangman
+Python
+Internet
+Network
+Algorithm
+Variable
+Constant
+Function
+Class
+Object
+List
+Dictionary
+Tuple
+Set
+Module
+Package
+Script
+Debugging
+Compiler

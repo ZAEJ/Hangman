@@ -20,8 +20,11 @@ LOSE_IMAGE = resource_path('images/lose.png')
 GAME_OVER_IMAGE = resource_path('images/gameover.png')
 
 # --- Category and High Score helpers ---
-def load_categories():
-    words_path = resource_path("src/words.txt")
+def load_categories(language='es'):
+    if language == 'en':
+        words_path = resource_path("src/words_en.txt")
+    else:
+        words_path = resource_path("src/words_es.txt")
     categories = {}
     try:
         with open(words_path, "r", encoding="utf-8") as f:
@@ -137,10 +140,7 @@ class HangmanGUI:
         self.gameover_sound = resource_path('src/sounds/game_over.wav')
     def get_font(self, size=18, weight="normal"):
         # Comic Sans MS is playful and widely available on Windows
-        try:
-            return ("Comic Sans MS", size, weight)
-        except:
-            return ("Consolas", size, weight)
+        return ("Comic Sans MS", size, weight)
     def load_images(self):
         self.hangman_imgs = [ImageTk.PhotoImage(Image.open(img)) for img in HANGMAN_IMAGES]
         self.win_img = ImageTk.PhotoImage(Image.open(WIN_IMAGE))
@@ -162,7 +162,7 @@ class HangmanGUI:
         self.root.title('Hangman Game')
         self.root.geometry('1000x700')  # Start larger, but allow resizing
         self.root.minsize(800, 600)
-        self.categories = load_categories()
+        self.categories = load_categories(self.language)
         self.settings = self.get_default_settings()
         self.score = 0
         self.high_score = load_high_score()
@@ -171,41 +171,22 @@ class HangmanGUI:
         self.setup_sounds()
         self.start_new_game()
 
+    # Removed broken duplicate setup_widgets
+
     def setup_widgets(self):
-        # Top bar: score left, settings right
-        topbar = tk.Frame(self.root)
-        topbar.pack(side=tk.TOP, fill='x')
-        self.score_var = tk.StringVar()
-
-        self.score_label = tk.Label(topbar, textvariable=self.score_var, font=self.get_font(12), fg="purple")
-        self.score_label.pack(side=tk.LEFT, padx=12, pady=8)
-
-        # Frame for settings and restart buttons (stacked vertically, top right)
-        self.topright_frame = tk.Frame(topbar)
-        self.topright_frame.pack(side=tk.RIGHT, padx=12, pady=8, anchor='ne')
-        self.settings_btn = tk.Button(self.topright_frame, text=self.lang['settings'], font=self.get_font(12), command=self.open_settings)
-        self.settings_btn.pack(side=tk.TOP, fill='x', pady=(0, 4))
-        self.restart_btn = tk.Button(self.topright_frame, text=self.lang['restart'], font=self.get_font(12), command=self.start_new_game)
-        self.restart_btn.pack(side=tk.TOP, fill='x')
-        self.update_score_display()
-
+        # Main frame must be created first
         self.main_frame = tk.Frame(self.root, padx=10, pady=10)
         self.main_frame.pack(expand=True, fill='both', padx=0, pady=0)
         for i in range(8):
             self.main_frame.rowconfigure(i, weight=1)
         self.main_frame.columnconfigure(0, weight=1)
 
-        self.img_label = tk.Label(self.main_frame)
-        self.img_label.grid(row=0, column=0, pady=(10, 0), sticky='n')
+        # Message variable and label (for win/lose/status messages)
+        self.msg_var = tk.StringVar()
+        self.msg_label = tk.Label(self.main_frame, textvariable=self.msg_var, font=self.get_font(14), fg="blue")
+        self.msg_label.grid(row=5, column=0, pady=(8, 0), sticky='n')
 
-        self.category_var = tk.StringVar()
-        self.category_label = tk.Label(self.main_frame, textvariable=self.category_var, font=self.get_font(14), fg="navy")
-        self.category_label.grid(row=1, column=0, pady=(6, 0), sticky='n')
-
-        self.word_var = tk.StringVar()
-        self.word_label = tk.Label(self.main_frame, textvariable=self.word_var, font=self.get_font(28, "bold"))
-        self.word_label.grid(row=2, column=0, pady=(12, 0), sticky='n')
-
+        # Entry frame for guesses
         entry_frame = tk.Frame(self.main_frame)
         entry_frame.grid(row=3, column=0, pady=(8, 0), sticky='ew', padx=10)
         entry_frame.columnconfigure(1, weight=1)
@@ -237,10 +218,16 @@ class HangmanGUI:
         for i in range(4):
             self.letters_frame.rowconfigure(i, weight=1, minsize=18)
 
-        # Add guessed and unused labels after letter buttons
-        self.msg_var = tk.StringVar()
-        self.msg_label = tk.Label(self.main_frame, textvariable=self.msg_var, fg="blue", font=self.get_font(14))
-        self.msg_label.grid(row=5, column=0, pady=(8, 0), sticky='n')
+        self.img_label = tk.Label(self.main_frame)
+        self.img_label.grid(row=0, column=0, pady=(10, 0), sticky='n')
+
+        self.category_var = tk.StringVar()
+        self.category_label = tk.Label(self.main_frame, textvariable=self.category_var, font=self.get_font(14), fg="navy")
+        self.category_label.grid(row=1, column=0, pady=(6, 0), sticky='n')
+
+        self.word_var = tk.StringVar()
+        self.word_label = tk.Label(self.main_frame, textvariable=self.word_var, font=self.get_font(28, "bold"))
+        self.word_label.grid(row=2, column=0, pady=(12, 0), sticky='n')
 
         self.guessed_var = tk.StringVar()
         self.guessed_label = tk.Label(self.main_frame, textvariable=self.guessed_var, font=self.get_font(10), fg="darkgreen")
@@ -248,6 +235,22 @@ class HangmanGUI:
         self.unused_var = tk.StringVar()
         self.unused_label = tk.Label(self.main_frame, textvariable=self.unused_var, font=self.get_font(10), fg="darkred")
         self.unused_label.grid(row=7, column=0, pady=(2, 0), sticky='n')
+
+        # Top bar: score left, settings right
+        topbar = tk.Frame(self.root)
+        topbar.pack(side=tk.TOP, fill='x')
+        self.score_var = tk.StringVar()
+
+        self.score_label = tk.Label(topbar, textvariable=self.score_var, font=self.get_font(12), fg="purple")
+        self.score_label.pack(side=tk.LEFT, padx=12, pady=8)
+
+        # Frame for settings and restart buttons (stacked vertically, top right)
+        self.topright_frame = tk.Frame(topbar)
+        self.topright_frame.pack(side=tk.RIGHT, padx=12, pady=8, anchor='ne')
+        self.settings_btn = tk.Button(self.topright_frame, text=self.lang['settings'], font=self.get_font(12), command=self.open_settings)
+        self.settings_btn.pack(side=tk.TOP, fill='x', pady=(0, 4))
+        self.restart_btn = tk.Button(self.topright_frame, text=self.lang['restart'], font=self.get_font(12), command=self.start_new_game)
+        self.restart_btn.pack(side=tk.TOP, fill='x')
 
     # ...existing code...
 
@@ -293,7 +296,12 @@ class HangmanGUI:
             s['category'] = None if cat == self.lang['random'] else cat
             s['mode'] = mode_var.get()
             s['hint'] = hint_var.get()
-            self.set_language(lang_var.get())
+            # If language changed, reload categories
+            if lang_var.get() != self.language:
+                self.language = lang_var.get()
+                self.lang = LANGUAGES[self.language]
+                self.categories = load_categories(self.language)
+            self.set_language(self.language)
             dlg.destroy()
         tk.Button(frame, text=self.lang['save'], command=save_and_close).grid(row=5, column=0, columnspan=2, pady=8)
 

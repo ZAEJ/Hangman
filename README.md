@@ -1,45 +1,48 @@
-# My Python Project
+
+# Hangman GUI Game
 
 ## Overview
-This project is a Python application that demonstrates a simple structure for organizing code, tests, and dependencies.
+This is a graphical Hangman game built with Python and Tkinter. Guess the hidden word or phrase by selecting letters or entering your guess. The game supports categories, difficulty levels, hints, and keeps track of your high score.
 
-## Project Structure
-```
-my-python-project
-├── src
-│   └── main.py
-├── tests
-│   └── test_main.py
-├── requirements.txt
-└── README.md
-```
+## How to Play
+1. **Start the Game:**
+	- Run the game with:
+	  ```
+	  python hangman_gui.py
+	  ```
+	- The main window will open with the Hangman image, category, and input fields.
 
-## Installation
-To set up the project, clone the repository and install the required dependencies. You can do this by running:
+2. **Game Controls:**
+	- **Guess a Letter:** Type a letter in the input box or click a letter button.
+	- **Guess the Phrase:** Type the full word or phrase and press Enter or click Submit.
+	- **Settings:** Click the "Configuración" (Settings) button (top right) to change difficulty, category, mode (single/multiplayer), enable/disable hints, or switch language.
+	- **Restart:** Click "Reiniciar Juego" (Restart Game) to start a new round.
 
-```
-pip install -r requirements.txt
-```
+3. **Game Rules:**
+	- You have a limited number of incorrect guesses (based on difficulty).
+	- Each wrong guess draws another part of the hangman.
+	- Use hints if enabled (after several wrong guesses).
+	- Win by guessing all letters or the full phrase before running out of attempts.
+	- Your score increases with each win. High scores are saved.
 
-## Usage
-To run the application, execute the following command:
+4. **Multiplayer Mode:**
+	- Choose "Multijugador" in settings. One player enters a word/phrase and (optionally) a category for the other to guess.
 
-```
-python src/main.py
-```
+## Requirements
+- Python 3.x
+- Tkinter (usually included with Python)
+- Pillow (for image support):
+  ```
+  pip install pillow
+  ```
 
-## Running Tests
-To run the tests, navigate to the `tests` directory and use the following command:
+## Assets
+- Images are in the `images/` folder.
+- Word lists are in `src/words.txt`.
+- Sounds are in `src/sounds/`.
 
-```
-python -m unittest test_main.py
-```
+## Troubleshooting
+- If images or sounds do not load, check that the asset folders are present and paths are correct.
+- For any errors, run the script from the project root directory.
 
-or if you are using pytest:
-
-```
-pytest
-```
-
-## Contributing
-If you would like to contribute to this project, please fork the repository and submit a pull request with your changes.
+## Enjoy the game!
